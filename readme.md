@@ -1,6 +1,6 @@
 # Care Companion – AI Assisted Elderly Healthcare Stick
 
-![Care Companion](images/Care_Companion.jpg)
+![Care Companion](images/care_companion.jpg)
 
 ## Overview
 
