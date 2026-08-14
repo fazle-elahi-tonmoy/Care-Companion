@@ -8,13 +8,14 @@
 MAX30105 particleSensor;
 HUSKYLENS huskylens;
 
+#define BUZZER_PIN 4
+#define SPO2_BUFFER_SIZE 100
 const byte RATE_SIZE = 4;
 byte rates[RATE_SIZE];
 byte rateSpot = 0;
 long lastBeat = 0;
 float beatsPerMinute = 0;
 int beatAvg = 0;
-#define SPO2_BUFFER_SIZE 100
 uint32_t irBuffer[SPO2_BUFFER_SIZE];
 uint32_t redBuffer[SPO2_BUFFER_SIZE];
 int32_t spo2;
@@ -23,10 +24,41 @@ int32_t algorithmHeartRate;
 int8_t validHeartRate;
 int spo2SampleCount = 0;
 const float TEMPERATURE_OFFSET_F = 11.5;
+
 unsigned long lastCloudUpdate = 0;
 const unsigned long CLOUD_INTERVAL = 10000;
+unsigned long lastMedicineScan = 0;
+const unsigned long MEDICINE_SCAN_INTERVAL = 300;
+unsigned long lastMedicineReminder = 0;
+const unsigned long MEDICINE_REMINDER_INTERVAL = 5000;
+unsigned long lastWrongMedicine = 0;
+const unsigned long WRONG_MEDICINE_INTERVAL = 2000;
+
+bool medicineScanning = false;
+bool medicineTaken = false;
+
+enum BuzzerPattern {
+  BUZZER_IDLE,
+  BUZZER_REMINDER,
+  BUZZER_WRONG,
+  BUZZER_CORRECT
+};
+BuzzerPattern buzzerPattern = BUZZER_IDLE;
+unsigned long buzzerTimer = 0;
+int buzzerStep = 0;
+bool buzzerActive = false;
+
+void startBuzzer(BuzzerPattern pattern) {
+  buzzerPattern = pattern;
+  buzzerStep = 0;
+  buzzerTimer = millis();
+  buzzerActive = false;
+  digitalWrite(BUZZER_PIN, LOW);
+}
 
 void setup() {
+  pinMode(BUZZER_PIN, OUTPUT);
+  digitalWrite(BUZZER_PIN, LOW);
   Serial.begin(115200);
   delay(1500);
   Serial.println("Initializing MAX30105...");
@@ -55,6 +87,8 @@ void loop() {
   ArduinoCloud.update();
   processSpO2Sample();
   processHeartRate();
+  checkMedicineSchedule();
+  updateBuzzer();
 
   if (millis() - lastCloudUpdate >= CLOUD_INTERVAL) {
     lastCloudUpdate = millis();
