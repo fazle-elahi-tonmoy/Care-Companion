@@ -1,0 +1,3 @@
+#define SECRET_DEVICE_KEY "L6HRgP4uNBqzWeLlAWRSnPf@R"
+#define SECRET_OPTIONAL_PASS "robotics"
+#define SECRET_SSID "ROBODEMY"
