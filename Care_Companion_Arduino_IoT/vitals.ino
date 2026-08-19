@@ -16,20 +16,20 @@ void processSpO2Sample() {
     particleSensor.nextSample();
     if (spo2SampleCount >= SPO2_BUFFER_SIZE) {
       maxim_heart_rate_and_oxygen_saturation(irBuffer, SPO2_BUFFER_SIZE, redBuffer, &spo2, &validSpO2, &algorithmHeartRate, &validHeartRate);
-      Serial.println();
-      Serial.println("--------- SENSOR RESULT ---------");
-      if (validSpO2) {
-        Serial.print("SpO2: ");
-        Serial.print(spo2);
-        Serial.println(" %");
-      } else Serial.println("SpO2: Invalid");
-
-      if (validHeartRate) {
-        Serial.print("Algorithm HR: ");
-        Serial.print(algorithmHeartRate);
-        Serial.println(" BPM");
-      } else Serial.println("Algorithm HR: Invalid");
-      Serial.println("---------------------------------");
+      // Serial.println();
+      // Serial.println("--------- SENSOR RESULT ---------");
+      // if (validSpO2) {
+      //   Serial.print("SpO2: ");
+      //   Serial.print(spo2);
+      //   Serial.println(" %");
+      // } else Serial.println("SpO2: Invalid");
+      // if (validHeartRate) {
+      //   Serial.print("Algorithm HR: ");
+      //   Serial.print(algorithmHeartRate);
+      //   Serial.println(" BPM");
+      // } else Serial.println("Algorithm HR: Invalid");
+      // Serial.println("---------------------------------");
+      
       spo2SampleCount = 0;
     }
   }
@@ -41,8 +41,7 @@ void processHeartRate() {
     long delta = millis() - lastBeat;
     lastBeat = millis();
     beatsPerMinute = 60.0 / (delta / 1000.0);
-    if (beatsPerMinute < 255 &&
-        beatsPerMinute > 20) {
+    if (beatsPerMinute < 255 && beatsPerMinute > 20) {
       rates[rateSpot++] = (byte)beatsPerMinute;
       rateSpot %= RATE_SIZE;
       beatAvg = 0;
@@ -50,5 +49,6 @@ void processHeartRate() {
       beatAvg /= RATE_SIZE;
     }
   }
-}
 
+  if (irValue > 5000) processSpO2Sample();
+}

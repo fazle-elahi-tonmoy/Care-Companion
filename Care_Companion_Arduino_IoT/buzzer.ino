@@ -117,14 +117,14 @@ void updateBuzzer() {
         break;
 
       case 5:
-        if (now - buzzerTimer >= 1000) {
-
+        if (now - buzzerTimer >= 100) {
           digitalWrite(BUZZER_PIN, LOW);
-
           buzzerPattern = BUZZER_IDLE;
           buzzerStep = 0;
         }
         break;
     }
   }
+
+  if (buzzerPattern == BUZZER_PANIC) digitalWrite(BUZZER_PIN, HIGH);
 }

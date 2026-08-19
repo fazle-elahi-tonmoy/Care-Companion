@@ -1,6 +1,17 @@
 void showMedicineOSD(const char *message) {
-  huskylens.customText("                    ", 160, 30);
-  if (strlen(message) > 0) huskylens.customText(message, 160, 30);
+  // huskylens.customText("                    ", 160, 30);
+  if (strlen(message) > 0) huskylens.customText(message, 100, 30);
+  else huskylens.clearCustomText();
+}
+
+void updateMedicineOSD() {
+  if (rightMedicineOSDActive) {
+    if (millis() - rightMedicineOSDTime >= RIGHT_MEDICINE_OSD_DURATION) {
+      showMedicineOSD("");
+      rightMedicineOSDActive = false;
+      Serial.println("Medicine confirmation OSD cleared.");
+    }
+  }
 }
 
 void huskyy() {
@@ -34,8 +45,9 @@ void processMedicineTag(HUSKYLENSResult result) {
     Serial.println("RIGHT MEDICINE!");
     medicineTaken = true;
     medicineScanning = false;
-    lastMedicineReminder = millis();
     showMedicineOSD("Right Medicine");
+    rightMedicineOSDTime = millis();
+    rightMedicineOSDActive = true;
     startBuzzer(BUZZER_CORRECT);
     return;
   }
