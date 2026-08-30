@@ -10,14 +10,14 @@ void fall_detection() {
     float totalAccel = sqrt(axg * axg + ayg * ayg + azg * azg);
     float angle = atan2(sqrt(axg * axg + ayg * ayg), azg) * 180.0 / PI;
 
-    if (totalAccel > accelThreshold && angle < angleThreshold && !fallDetected) {
-      Serial.println("Fall detected!");
-      digitalWrite(BUZZER_PIN, HIGH);  // Alarm ON
-      sendSMS("FALL DETECTED!");
-      digitalWrite(BUZZER_PIN, LOW);  // Alarm OFF
-      Fall_Detection = fallDetected = true;
-      last_fall_alarm = millis();
-    }
+    // if (totalAccel > accelThreshold && angle < angleThreshold && !fallDetected) {
+    //   Serial.println("Fall detected!");
+    //   digitalWrite(BUZZER_PIN, HIGH);  // Alarm ON
+    //   sendSMS("FALL DETECTED!");
+    //   digitalWrite(BUZZER_PIN, LOW);  // Alarm OFF
+    //   Fall_Detection = fallDetected = true;
+    //   last_fall_alarm = millis();
+    // }
 
     // Debug info
     // Serial.print("Accel: ");
