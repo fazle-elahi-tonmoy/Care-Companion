@@ -42,7 +42,7 @@ int gpsSatellites = 0;
 bool gpsValid = false;
 unsigned long lastGPSFix = 0;
 
-float accelThreshold = 2;     // g-force threshold for fall detection
+float accelThreshold = 1.5;     // g-force threshold for fall detection
 float angleThreshold = 80.0;  // degrees tilt threshold
 bool fallDetected = false;
 unsigned long last_fall = 0, last_fall_alarm = 0;
@@ -125,16 +125,14 @@ void setup() {
     text("SENSOR", 18);
     text("FAILED", 44);
     display.display();
-    while (1)
+    while (!panicEvent)
       ;
   }
-  while (!huskylens.begin(Wire)) {
+  while (!huskylens.begin(Wire) && !panicEvent) {
     Serial.println(F("HUSKYLENS not connected!"));
     text("CAMERA", 18);
     text("FAILED", 44);
     display.display();
-    while (1)
-      ;
   }
 
   mpu.initialize();
@@ -144,7 +142,7 @@ void setup() {
     text("GYRO", 18);
     text("FAILED", 44);
     display.display();
-    while (1)
+    while (!panicEvent)
       ;
   }
 
@@ -164,6 +162,7 @@ void setup() {
   setDebugMessageLevel(2);
   ArduinoCloud.printDebugInfo();
   prep_time = millis();
+  panicEvent = false;
 }
 
 void loop() {
